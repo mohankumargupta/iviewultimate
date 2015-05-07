@@ -1,0 +1,43 @@
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "C:\Python34\lib\site-packages\requests\packages\urllib3\util\ssl_.py", line 244, in ssl_wrap_socket
+    context.load_verify_locations(ca_certs)
+FileNotFoundError: [Errno 2] No such file or directory
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python34\lib\site-packages\requests\adapters.py", line 370, in send
+    timeout=timeout
+  File "C:\Python34\lib\site-packages\requests\packages\urllib3\connectionpool.py", line 544, in urlopen
+    body=body, headers=headers)
+  File "C:\Python34\lib\site-packages\requests\packages\urllib3\connectionpool.py", line 341, in _make_request
+    self._validate_conn(conn)
+  File "C:\Python34\lib\site-packages\requests\packages\urllib3\connectionpool.py", line 762, in _validate_conn
+    conn.connect()
+  File "C:\Python34\lib\site-packages\requests\packages\urllib3\connection.py", line 238, in connect
+    ssl_version=resolved_ssl_version)
+  File "C:\Python34\lib\site-packages\requests\packages\urllib3\util\ssl_.py", line 246, in ssl_wrap_socket
+    raise SSLError(e)
+requests.packages.urllib3.exceptions.SSLError: [Errno 2] No such file or directory
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python34\lib\tkinter\__init__.py", line 1533, in __call__
+    return self.func(*args)
+  File "C:\Users\mohan\Documents\python\iviewultimate\series.py", line 42, in callback
+    self.downloadVideo(assetid)
+  File "C:\Users\mohan\Documents\python\iviewultimate\series.py", line 45, in downloadVideo
+    r = requests.get('https://tviview.abc.net.au/iview/feed/sony/');
+  File "C:\Python34\lib\site-packages\requests\api.py", line 65, in get
+    return request('get', url, **kwargs)
+  File "C:\Python34\lib\site-packages\requests\api.py", line 49, in request
+    response = session.request(method=method, url=url, **kwargs)
+  File "C:\Python34\lib\site-packages\requests\sessions.py", line 461, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Python34\lib\site-packages\requests\sessions.py", line 573, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Python34\lib\site-packages\requests\adapters.py", line 431, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: [Errno 2] No such file or directory

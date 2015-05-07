@@ -4,12 +4,21 @@ import tkinter as Tkinter
 from bs4 import BeautifulSoup
 import urllib3
 import math
+import iviewdownloader
+from tkinter import filedialog
 
 class SeriesListing:
 	def __init__(self, url):
 		r = requests.get(url)
-		self.listing = json.loads(r.text);
+		self.url = url
+		self.listing = json.loads(r.text)
 	def getListing(self):
+		seriesid = self.url.split("series=")[1]
+		itemindex = 0
+		for item in self.listing:
+			if (item['a'] == seriesid):
+				return item['f']
+			itemindex = itemindex + 1
 		return self.listing[0]['f']
 
 
@@ -18,6 +27,9 @@ class SeriesView:
 		self.master = root
 		self.frame = Tkinter.Frame(root)
 		root.geometry("{}x{}".format(800,600))
+		self.entryText = Tkinter.StringVar()
+		entry = Tkinter.Entry(self.frame, textvariable=self.entryText, width=200, state=Tkinter.DISABLED)
+		changedirbutton = Tkinter.Button(self.frame, text="Change", command=self.changeDirectory)
 		scrollbar = Tkinter.Scrollbar(self.frame, orient="vertical")
 		listbox = Tkinter.Listbox(self.frame, width=800, height=600,selectmode=Tkinter.SINGLE, yscrollcommand=scrollbar.set)
 		listbox.bind('<Double-Button-1>',self.callback )
@@ -26,9 +38,15 @@ class SeriesView:
 		self.listing = listing
 		for item in listing:
 			listbox.insert(Tkinter.END, item['b'])
+		entry.pack()
+		changedirbutton.pack()
 		scrollbar.pack(side="right", fill="y")
 		listbox.pack(side="left",fill="both", expand=True)
-		self.frame.pack()	
+		self.frame.pack()
+
+	def changeDirectory(self):
+		directory = filedialog.askdirectory()
+		self.entryText.set(directory)
 
 	def callback(self,event):
 		itemnumber = event.widget.curselection()[0]
@@ -39,10 +57,12 @@ class SeriesView:
 		print(self.listing[itemnumber]['s'])
 		assetid = self.listing[itemnumber]['s'].rsplit('/',1)[1][:13]
 		#print(assetid)
-		self.downloadVideo(assetid)
+		#self.downloadVideo(assetid)
+		iviewdownloader.downloadIViewVideo(assetid, self.entryText.get() + '/' + self.listing[itemnumber]['b'] + ".mp4")
+
 
 	def downloadVideo(self,assetid):
-		r = requests.get('https://tviview.abc.net.au/iview/feed/sony/');
+		r = requests.get('https://tviview.abc.net.au/iview/feed/sony/', verify=False);
 		soup = BeautifulSoup(r.text)
 		assets = soup.find_all('asset')
 		for asset in assets:
@@ -51,6 +71,7 @@ class SeriesView:
 				break
 
 		#url = assets[1].find('asseturl').contents[0];
+		print(url)
 		request = urllib3.PoolManager().urlopen('GET', url, preload_content=False)
 		with open('boo.mp4','wb') as out:
 			filesize = request.getheaders()['content-length']
@@ -68,4 +89,3 @@ class SeriesView:
 
 if __name__ == '__main__':
 	pass
-
